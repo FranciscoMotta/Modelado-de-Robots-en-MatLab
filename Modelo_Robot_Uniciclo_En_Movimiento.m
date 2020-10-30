@@ -20,7 +20,7 @@ plot(hx,hy,'b','LineWidth',2); %Dibujamos un circulo en la posición deseada
 xlabel('x(m)'); ylabel('y(m)'); zlabel('z(m)'); % Etiquetas de los ejes
 camlight('right'); %Introducimos una luz artificial
 
-step = 1;
+step = 1; %%%
 
 for i=1:step:length(vectorTiempo)
     delete(M1)
