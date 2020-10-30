@@ -1,0 +1,52 @@
+clc % Limpiamos la ventana de comandos 
+clear all %Limpiamos el workspace
+close all %Cerramos las ventanas 
+
+ts = 0.1; %Tiempo de muestreo
+t = 0:ts:30; %Vector de tiempo
+
+ur = 0.1*ones(1, length(t)); %Velocidad lineal de la rueda derecha
+ul = 0.1*ones(1, length(t)); %Velocidad lineal de la rueda izquierda
+
+hx(1) = 0;
+hy(1) = 0;
+phi(1) = 0;
+
+d = 0.5; %Distancia entre las ruedas
+
+for k = 1:length(t)
+    %Introducimos el modelo cinemático del robot uniciclo
+    hxp(k)=((ur(k)+ul(k))/2)*cos(phi(k));
+    hyp(k)=((ur(k)+ul(k))/2)*sin(phi(k));
+    phip(k)=(ur(k)-ul(k))/d;
+    
+    %Integral numércia por el método de Euler
+    
+    hx(k+1)=hx(k)+ts*hxp(k);
+    hy(k+1)=hy(k)+ts*hyp(k);
+    phi(k+1)=phi(k)+ts*phip(k);
+    
+end 
+
+fig = figure;
+set(fig, 'position', [120 90 1200 600]);
+axis equal;
+axis([-2 4 -2 2 -0.5 1]);
+view([135 35]);
+grid on;
+
+MobileRobot;
+M1 = MobilePlot(hx(1),hy(1),phi(1));
+hold on
+M2 = plot3(hx(1), hy(1), zeros(1),'r'); %Dibujamos la trayectoria
+xlabel('x(m)'); ylabel('y(m)'); zlabel('z(m)'); %Etiquetamos a los ejes
+camlight right;
+
+step = 10; %Pasos para el loop for
+
+for i = 1:step:length(t) %Loop de enumación
+    delete(M1) %Borramos al robot en cada ciclo de simulación
+    M1=MobilePlot(hx(i),hy(i),phi(i)); hold on
+    plot3(hx(1:i),hy(1:i),zeros(1,i),'b','LineWidth',2);
+    pause(ts)
+end 
